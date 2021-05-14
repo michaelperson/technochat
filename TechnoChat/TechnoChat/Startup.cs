@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TechnoChat.Hubs;
 
 namespace TechnoChat
 {
@@ -23,6 +24,11 @@ namespace TechnoChat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
+            services.AddCors(o =>
+            o.AddDefaultPolicy(b => b.AllowAnyOrigin()
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod()));
             services.AddControllersWithViews();
         }
 
@@ -41,7 +47,7 @@ namespace TechnoChat
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthorization();
@@ -51,6 +57,7 @@ namespace TechnoChat
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
     }
