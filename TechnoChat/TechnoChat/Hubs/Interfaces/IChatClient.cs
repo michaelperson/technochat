@@ -43,5 +43,17 @@ namespace TechnoChat.Hubs.Interfaces
         /// <param name="user">L'utilisateur ayant lancé le wizz</param>
         /// <returns>La Task</returns>
         Task Wizz(string user);
+        /// <summary>
+        /// Permet d'informer de l'arrivée d'un nouveau membre
+        /// </summary>
+        /// <param name="user">L'utilisateur </param>
+        /// <returns>La Task</returns>
+        Task MemberJoinChat(string user);
+        /// <summary>
+        /// Permet d'informer du départ d'un membre
+        /// </summary>
+        /// <param name="user">L'utilisateur </param>
+        /// <returns>La Task</returns>
+        Task MemberLeaveChat(string user);
     }
 }
