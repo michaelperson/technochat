@@ -26,12 +26,37 @@ namespace TechnoChat.Hubs
 
         public async Task SendMessage(string message, string recipient = "Tous", string groupName = "Aucun")
         {
-            throw new NotImplementedException();
+           if(recipient != "Tous")
+            {
+                await Clients.Client(recipient).ReceiveMessage(message, Context.ConnectionId); 
+            }
+           else if (groupName != "Aucun")
+            {
+                await Clients.Group(groupName).ReceiveMessage(message, Context.ConnectionId);
+            }
+             else
+            {
+                await Clients.AllExcept(Context.ConnectionId).ReceiveMessage(message, Context.ConnectionId);
+            }
         }
 
         public async Task Wizz(string recipient = "Tous", string groupName = "Aucun")
         {
             throw new NotImplementedException();
+        }
+
+
+        public override Task OnConnectedAsync()
+        {
+            Clients.AllExcept(Context.ConnectionId).ReceiveMessage($"{Context.ConnectionId} join the TechnoChat", Context.ConnectionId);
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            Clients.AllExcept(Context.ConnectionId).ReceiveMessage($"{Context.ConnectionId} has leaved the TechnoChat", Context.ConnectionId);
+
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }
