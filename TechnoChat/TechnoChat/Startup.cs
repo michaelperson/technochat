@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TechnoChat.Hubs;
 
@@ -24,11 +27,41 @@ namespace TechnoChat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.SaveToken = true;
+                        options.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = Configuration["jwt:issuer"],
+                            ValidAudience = Configuration["jwt:audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["jwt:key"]))
+                        };
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chatHub")))
+                                {
+                                    context.Token = accessToken;
+                                    context.HttpContext.Request.Headers.Add("Authorization", $"Bearer {accessToken}");
+                                }
+                                return Task.CompletedTask;
+                            }
+                        };
+                    });
             services.AddSignalR();
-            services.AddCors(o =>
-            o.AddDefaultPolicy(b => b.AllowAnyOrigin()
-                                          .AllowAnyHeader()
-                                          .AllowAnyMethod()));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin());
+            });
             services.AddControllersWithViews();
         }
 
@@ -47,9 +80,10 @@ namespace TechnoChat
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCors();
             app.UseRouting();
 
+            app.UseCors();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

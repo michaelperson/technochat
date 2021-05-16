@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnoChat", "TechnoChat\TechnoChat.csproj", "{D1F654E4-4549-4C05-9ADE-918B4E92CB02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechnoChat", "TechnoChat\TechnoChat.csproj", "{D1F654E4-4549-4C05-9ADE-918B4E92CB02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnoChat.Models", "TechnoChat.Models\TechnoChat.Models.csproj", "{B643C69D-D256-432D-A0CE-3AC234BFE47E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D1F654E4-4549-4C05-9ADE-918B4E92CB02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1F654E4-4549-4C05-9ADE-918B4E92CB02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1F654E4-4549-4C05-9ADE-918B4E92CB02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B643C69D-D256-432D-A0CE-3AC234BFE47E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B643C69D-D256-432D-A0CE-3AC234BFE47E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B643C69D-D256-432D-A0CE-3AC234BFE47E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B643C69D-D256-432D-A0CE-3AC234BFE47E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
