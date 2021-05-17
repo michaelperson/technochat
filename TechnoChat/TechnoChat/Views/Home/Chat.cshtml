@@ -1,0 +1,64 @@
+﻿@section Scripts
+{
+    <script src="~/lib/microsoft-signalr/signalr.js" type="text/javascript"></script>
+
+    <script>
+        let connection = new signalR.HubConnectionBuilder()
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Trace)
+            .withUrl("/chatHub", 
+                {
+                    transport: signalR.HttpTransportType.WebSockets,
+                    accessTokenFactory: () => localStorage.getItem("token")
+                }
+            )
+            .build();
+
+        connection.on("ReceiveMessage", data => {
+            console.log(data);
+        });
+
+        connection.on("AccuseReception", data => {
+            if (data) { alert("Envoyé"); }
+            else
+                alert("Erreur");
+        });
+
+        connection.start()
+            .then(() => connection.invoke("SendMessage", "Moi", "Coucou",""));
+    </script>
+
+
+     <script>
+
+         document.querySelector('.btnjoin').addEventListener("click", function (event)
+         {
+             if (connection.connectionState === "Connected")
+             {
+                 connection.invoke("MemberJoinGroup", event.currentTarget.dataset.groupname);
+             }
+
+         });
+
+     </script>
+
+}
+
+
+
+<ul>
+    @foreach (TechnoChat.Models.GroupModel item in Model)
+    {
+        <li>@item.Name <button data-groupName="@item.Name" class="btn btn-info btnjoin">Join</button> </li>
+    }
+</ul>
+
+
+
+
+
+
+
+
+
+

@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechnoChat.Hubs;
+using TechnoChat.Infra;
+using TechnoChat.Infra.Interfaces;
 
 namespace TechnoChat
 {
@@ -27,6 +29,10 @@ namespace TechnoChat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            /*Ajout de mon groupmanager*/
+            services.AddSingleton<IGroupManager, GroupManager>(); 
+
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -85,12 +91,17 @@ namespace TechnoChat
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
+
+                endpoints.MapControllerRoute(
+                    name: "api",
+                    pattern: "api/{controller}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
         }

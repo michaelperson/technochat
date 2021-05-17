@@ -12,9 +12,9 @@
            
             <center><img src="~/img/logo.jpg" width="125" /></center>
 
-            <form method="post">
+            <form method="post" id="frmLogin">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Login">
+                    <input type="text" class="form-control" placeholder="Login" name="Login">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="password" class="form-control" placeholder="Password" name="Password">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -52,3 +52,45 @@
     </div>
     <!-- /.card -->
 </div>
+
+
+@section Scripts
+{
+    <script>
+        let frm = document.getElementById("frmLogin");
+        frm.addEventListener("submit", callLoginProcess, false);
+
+
+        function callLoginProcess(event)
+        {
+            //Empêcher le post du formulaire
+            event.preventDefault(); 
+            let link = "https://localhost:44348/api/token/";
+            let login = frm[0].value;
+            let pwd = frm[1].value;
+            let data = {
+                "Login": login,
+                "Password": pwd
+            };
+            fetch(link,
+                {
+                        method: "POST",
+                    headers: { "Content-Type": "application/json; charset=utf-8" },
+                    body: JSON.stringify(data)
+                }
+                    )
+                .then(res => res.json()) 
+                .then(response => {
+                    // here you do what you want with response
+                    localStorage.setItem('token', response.token)
+                    document.location.href = "/Home/Chat"
+                })
+                .catch(err => {
+                  
+                    alert("sorry, there are no results for your search")
+                });
+        }
+
+
+    </script>
+}

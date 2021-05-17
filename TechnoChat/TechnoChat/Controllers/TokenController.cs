@@ -41,6 +41,7 @@ namespace TechnoChat.Controllers
 
             if (model != null)
             {
+                
                 UserModel resultModel = new UserModel
                 {
                     Token = this.CreateToken(model)

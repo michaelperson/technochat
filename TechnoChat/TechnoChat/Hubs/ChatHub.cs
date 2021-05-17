@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims; // POUR LES CLAIMS !!!!
 using System.Threading.Tasks;
 using TechnoChat.Hubs.Interfaces;
 
@@ -12,14 +13,28 @@ namespace TechnoChat.Hubs
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub<IChatClient>, IChatHub
     {
+        private TechnoChat.Infra.Interfaces.IGroupManager _groupManager;
+
+        public ChatHub(TechnoChat.Infra.Interfaces.IGroupManager groupManager)
+        {
+            _groupManager = groupManager;
+        }
+
         public async Task ChangeStatus(EStatus status)
         {
             throw new NotImplementedException();
         }
 
-        public async Task MemberJoinGroup(string groupName)
+        public async Task MemberJoinGroup( string groupName)
         {
-            throw new NotImplementedException();
+            string connectionId = Context.ConnectionId;
+            string user = Context.User.Claims.First(s=> s.Type== ClaimTypes.GivenName).Value;
+            
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName).ContinueWith((T)=>
+            {
+                _groupManager.AddUserToGroup(user, connectionId, groupName);
+            }
+            );
         }
 
         public async Task MemberLeaveGroup(string groupName)
@@ -27,9 +42,18 @@ namespace TechnoChat.Hubs
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="recipient"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        /// <remarks> En js, il FAUT transmettre TOUT les paramètres même les defaults </remarks>
         public async Task SendMessage(string message, string recipient = "Tous", string groupName = "Aucun")
         {
-           if(recipient != "Tous")
+            string user = Context.UserIdentifier;
+            if (recipient != "Tous")
             {
                 await Clients.Client(recipient).ReceiveMessage(message, Context.ConnectionId); 
             }

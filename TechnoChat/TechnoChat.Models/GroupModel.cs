@@ -1,40 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TechnoChat.Models
 {
-    public class LoginModel
+    public class GroupModel
     {
-        private string _login, _password;
+        private string _name;
+        private List<UserModel> _users;
 
-        [Required]
-        public string Login
+        public string Name
         {
             get
             {
-                return _login;
+                return _name;
             }
 
             set
             {
-                _login = value;
+                _name = value;
             }
         }
 
-        public string Password
+        public List<UserModel> Users
         {
             get
             {
-                return _password;
+                return _users=_users??new List<UserModel>();
             }
 
             set
             {
-                _password = value;
+                _users = value;
             }
         }
     }

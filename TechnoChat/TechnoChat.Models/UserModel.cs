@@ -4,31 +4,31 @@ namespace TechnoChat.Models
 {
     public class UserModel
     {
-        private string _firstName, _lastName, _token;
-
-        public string FirstName
+        private string _name, _connectionId, _token;
+        
+        public string Name
         {
             get
             {
-                return _firstName;
+                return _name;
             }
 
             set
             {
-                _firstName = value;
+                _name = value;
             }
         }
 
-        public string LastName
+        public string ConnectionId
         {
             get
             {
-                return _lastName;
+                return _connectionId;
             }
 
             set
             {
-                _lastName = value;
+                _connectionId = value;
             }
         }
 
