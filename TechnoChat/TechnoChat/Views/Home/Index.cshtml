@@ -74,7 +74,7 @@
             };
             fetch(link,
                 {
-                        method: "POST",
+                    method: "POST",
                     headers: { "Content-Type": "application/json; charset=utf-8" },
                     body: JSON.stringify(data)
                 }
@@ -87,7 +87,7 @@
                 })
                 .catch(err => {
                   
-                    alert("sorry, there are no results for your search")
+                    alert("sorry, authentication failed")
                 });
         }
 

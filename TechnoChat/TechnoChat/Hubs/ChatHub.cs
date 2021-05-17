@@ -52,18 +52,18 @@ namespace TechnoChat.Hubs
         /// <remarks> En js, il FAUT transmettre TOUT les paramètres même les defaults </remarks>
         public async Task SendMessage(string message, string recipient = "Tous", string groupName = "Aucun")
         {
-            string user = Context.UserIdentifier;
+            string user = Context.User.Claims.First(s => s.Type == ClaimTypes.GivenName).Value;
             if (recipient != "Tous")
             {
-                await Clients.Client(recipient).ReceiveMessage(message, Context.ConnectionId); 
+                await Clients.Client(recipient).ReceiveMessage($"{user} : {message}", Context.ConnectionId); 
             }
            else if (groupName != "Aucun")
             {
-                await Clients.Group(groupName).ReceiveMessage(message, Context.ConnectionId);
+                await Clients.Group(groupName).ReceiveMessage($"{user} : {message}", Context.ConnectionId);
             }
              else
             {
-                await Clients.AllExcept(Context.ConnectionId).ReceiveMessage(message, Context.ConnectionId);
+                await Clients.AllExcept(Context.ConnectionId).ReceiveMessage($"{user} : {message}", Context.ConnectionId);
             }
         }
 

@@ -15,7 +15,8 @@
             .build();
 
         connection.on("ReceiveMessage", data => {
-            console.log(data);
+            
+            document.getElementById("txtInfo").value += "\r\n" + data;
         });
 
         connection.on("AccuseReception", data => {
@@ -25,7 +26,7 @@
         });
 
         connection.start()
-            .then(() => connection.invoke("SendMessage", "Moi", "Coucou",""));
+            .then(() => console.log("SignalR Up"));
     </script>
 
 
@@ -42,6 +43,17 @@
 
      </script>
 
+<script>
+    document.getElementById("btnSend").addEventListener("click", function (e)
+    {
+        // recupérer le texte
+        let info = document.getElementById("txtMessage").value;
+        document.getElementById("txtInfo").value = "\r\n je dis : " + info;
+        connection.invoke("SendMessage", info, "Tous", "Aucun").then(() => info = "" );
+        
+
+    });
+</script>
 }
 
 
@@ -52,6 +64,10 @@
         <li>@item.Name <button data-groupName="@item.Name" class="btn btn-info btnjoin">Join</button> </li>
     }
 </ul>
+<hr />
+<textarea id="txtInfo"></textarea><br />
+
+<input type="text" placeholder="votre message" id="txtMessage" /><button id="btnSend">Send</button>
 
 
 
